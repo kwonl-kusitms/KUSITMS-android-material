@@ -3,3 +3,5 @@
 
 ## Table of content
 [1주차 - OT 및 안드로이드 소개](week_01/README.md)
+
+[1주차 과제](week_01/Assignment.md)
