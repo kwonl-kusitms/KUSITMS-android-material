@@ -61,7 +61,7 @@ git pull origin master
 
 
 ```xml
-<!--위 화면의 frontend-->
+<!-- 위 화면의 frontend -->
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -164,3 +164,217 @@ Layout에 따라서 그 안의 view가 어떻게 배치되는지 결정이 됩�
 위의 예제를 보면, nameInput view는 parent(Layout)에 붙어있고, bias도 모두 0이며 constraint 길이도 0이기 때문에 가운데로 고정이 되겠죠? 즉, constraint layout에서는 view의 위치를 결정짓는 것이 constraint의 길이와 bias 두 가지입니다. 보통은 디자이너가 px단위로 작업해서 넘어주기 때문에, bias보다는 constraint의 길이를 통해 결정짓는 것같기는 합니다.
 
 ### Linear Layout
+Linear Layout을 실습하기 위해, 다음과 같이 새 layout을 만들어봅시다.
+
+1. 왼쪽의 디렉토리 구조에서, `res/layout`에 좌클릭 후, `New -> Layout resource file` 클릭
+2. file name은 activity_linear, Root element를 LinearLayout으로 설정
+3. 이후의 모든 창에 ok를 클릭!
+
+Linear layout이 생성되었습니다. 언뜻 보기에는 Constraint layout과 차이가 없어보이죠? 여기에 textView를 여러개 끌어다 봅시다. 그러면 다음과 같이 element가 정렬되는 것을 확인할 수 있습니다.
+
+![linear layout](images/bd611b4e-cb5f-460f-b619-5c7f4bba1af5.png)
+
+그런데, 여러분은 에뮬레이터를 실행시켜도 아직 이전의 Hello world!가 떠있을 겁니다. layout이 반영이 안된걸까요?
+
+안드로이드는 frontend와 backend로 이뤄져있다고 했습니다. xml파일을 만들었으면, 이 frontend를 backend에 연결을 해줘야겠죠? 안드로이드에서는 저렇게 한번에 보여지는 전체 화면을 **Activity**라고 하는데, 이 activity는 java코드로 결정을 합니다. 이 activity에서 어떤 xml을 사용할지는 코드에서 지정해줘야겠죠? MainActivity.java에 들어가서, 다음 부분을 수정해줍시다.
+
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+}
+
+// 위 부분을 다음과 같이 바꿔줍시다.
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_linear);
+}
+```
+
+설명을 간단히 하자면, 이 activity의 frontend를 activity_linear이라는 xml파일로 사용하겠다는 의미입니다. 이제 다시 실행하면, 우리가 만든 linear layout이 표시가 될겁니다.
+
+![linear layout 종류](images/1.jpg)
+> 출처: 네이버 부스트코스 안드로이드 강좌
+
+Linear layout은 말 그대로, 선형적으로 구성됩니다. 위 그림과 같이 가로, 세로 방향으로 쌓을 수도 있고, 레이아웃 안에 레이아웃을 넣어 배치를 할 수도 있습니다.
+
+각각의 view의 크기는 match_parent, wrap_content, 절대 크기(px, dp 단위)로 결정할 수 있으며, view는 padding, boarder, margin을 가집니다(HTML과 같네요! 와우!).
+
+주로 게시판과 같이 반복되는 view들이 나열될 때 사용하도록 합니다.
+
+### Relative Layout
+다음은 Relative layout을 알아보도록 합시다. 만드는 과정은 Linear layout과 같습니다.
+
+1. 왼쪽의 디렉토리 구조에서, `res/layout`에 좌클릭 후, `New -> Layout resource file` 클릭
+2. file name은 **activity_relative**, Root element를 **RelativeLayout**으로 설정
+3. 이후의 모든 창에 ok를 클릭!
+
+그러면 다시 java코드로 가서 어떤 xml파일을 사용할 것인지 바꿔줘야겠죠? `setContentView(R.layout.activity_linear);` 를 `setContentView(R.layout.activity_relative);`로 바꿔줍시다. 그러면 에뮬레이터로 실행했을 때, relative layout을 적용할 수 있습니다.
+
+Relative Layout에서는 모든 view들이 상대적으로 위치가 결정됩니다. 각각의 view의 크기는 마찬가지로 match_parent, wrap_content, 절대 크기(px, dp 단위)로 결정할 수 있습니다. relative layout에서는 xml 코드를 보면서 이해하는 것이 편합니다.
+
+```xml
+<!-- Relative layout example -->
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/centerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/centerButton"
+        android:text="Button" />
+</RelativeLayout>
+```
+
+centerButton이 parent의 center에 위치하도록 한 뒤, button3을 여기저기에 위치하도록 하며 이해해봅시다. `android:layout_`까지 치면 자동완성 리스트가 뜨는데, 이것들을 살펴보며 각각이 어떻게 변하는지 확인할 수 있습니다.
+
+예를 들어 위의 코드에서 `android:layout_alignTop="@id/centerButton"` 이 부분은 button3의 위치를 centerButton에 상대적으로 결정하는데, 두 버튼의 위를 맞추라는 뜻입니다. PPT에서 많이 해봤죠? ㅋㅋㅋ 이것을 코드로 하면 이렇게나 쉽습니다.
+
+상하의 위치를 결정짓는 것들이 있고, 좌우의 위치를 결정짓는 것들이 있습니다. 예를들어, button3을 centerButton과 중심을 맞추고, centerButton의 위에 50px떨어지도록 위치하고 싶으면 다음과 같이 코드를 입력하면 됩니다.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/centerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:text="Button" />
+
+</RelativeLayout>
+```
+
+button3의 center를 parent의 center에 맞추고, top의 margin을 150dp로 설정했습니다. 이제, 이것저것 사용해보면서 relative layout에 익숙해져 봅시다.
+
+참고로 px, dp, pt가 헷갈리시면 다음 블로그 글을 참고합시다. 근데 대부분은 디자이너가 정해서 주더라고요 ㅎㅎ..
+> [http://uidesignguides.com/ppi-dpi-dp-sp-pt%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%BC%EA%B9%8C/
+](http://uidesignguides.com/ppi-dpi-dp-sp-pt%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%BC%EA%B9%8C/)
+
+
+### Frame Layout
+프레임 레이아웃은 layout에 단 하나의 view가 들어가도록 설계된 것입니다. 이 layout에서는 기본적으로 가장 나중에 추가된 view만 표시하도록 되어있습니다.
+
+예를 들면 다음과 같은 화면을 구성할 수 있습니다. 버튼을 클릭하면, layout내에서 view가 toggle되어 나타나도록 하는 것입니다. 이번에는 layout을 만들 때, Constraint layout으로 만들어봅시다. 그리고나서, layout 코드를 다음과 같이 바꿔주세요.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_red_dark" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_blue_bright" />
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+MainActivity.java의 코드도 다음과 같이 바꿔주세요!
+
+```java
+package com.example.layoutpractice;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+
+public class MainActivity extends AppCompatActivity {
+    public static int active_idx = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_frmae);
+
+        Button toggleButton = findViewById(R.id.toggleButton);
+        toggleButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FrameLayout frameLayout = findViewById(R.id.frameLayout);
+                Log.d("onclick", String.format("%d", MainActivity.active_idx));
+                for (int i = 0; i < frameLayout.getChildCount(); i++) {
+                    if (i == MainActivity.active_idx) {
+                        MainActivity.active_idx = (MainActivity.active_idx + 1) % 2;
+
+                        frameLayout.getChildAt(i).setVisibility(View.INVISIBLE);
+                        frameLayout.getChildAt(MainActivity.active_idx).setVisibility(View.VISIBLE);
+
+                        break;
+                    }
+                }
+            }
+        });
+    }
+}
+```
+
+그리고나서 실행하면 다음과 같이 button을 누를 때마다 색이 바뀌는 것을 확인할 수 있습니다. 자세한 코드는 나중에 이해하도록 하고, 이런 용도로 사용된다 정도로만 이해하도록 하죠!
+
+### Widget
+안드로이드는 기본적으로 여러가지 위젯을 제공해줍니다. 위젯 또한 view인데, 우리가 지금까지 자연스럽게 사용하고 있던 Button, TextView, EditText 등이 widget입니다. 여러분이 만들고싶은 대부분의 기능은 위젯만을 이용하여 구현할 수 있습니다. 자세한 스타일링이나 사용법은 역시 구글링을 하세요..
+
+#### 구글링 예시
+예를 들어 제가 TextView를 사용하는데, 너무 안예뻐서 style을 손보고싶다고 합시다. 글꼴과 크기, 정렬을 바꾸고싶으면 다음과 같이 검색하면 됩니다. `android studio textview font` 그러면 결과가 주르르륵..적당한 stack overflow 글을 찾아서 들어가면 폰트를 변경하는 방법을 알 수 있습니다.
+
+button을 클릭할 때 동작을 설정하고싶으면 어떻게 구글링 할까요? `android studio button on click` 만 검색해도 결과가 주르륵 나옵니다. 참 쉽죠?
+
+### Drawable
+#### State drawable
+
+#### Shape drawable
