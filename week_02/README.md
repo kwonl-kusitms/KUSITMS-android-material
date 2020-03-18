@@ -379,6 +379,74 @@ public class MainActivity extends AppCompatActivity {
 button을 클릭할 때 동작을 설정하고싶으면 어떻게 구글링 할까요? `android studio button on click` 만 검색해도 결과가 주르륵 나옵니다. 참 쉽죠?
 
 ### Drawable
+Drawable이란, 화면에 나타나는 여러 요소들을 xml로 정의하는 것입니다. 크게 state drawble과 shape drawble을 많이 사용하는데, 한번 알아보도록 합시다. 시작하기에 앞서, activity_drawable.xml을 만들어 MainActivity에 적용시켜주세요!
+
 #### State drawable
+state drawble은 말 그대로 상태에 따라 변하는 것을 규정한 drawable입니다. 예시로 보는게 빠르겠죠? 한번 보도록 합시다.
+
+어떤 버튼을 눌렀을 때, 누르고 있는 동안 이미지가 바뀌는 것을 보셨죠? 우리도 한번 해봅시다.
+
+![selected thumb](images/ic_thumb_up_selected.png)
+
+![default thumb](images/ic_thumb_up.png)
+
+1. 위 이미지를 다운받아서, `res -> drawable` 에 드래그하여 추가해봅시다.
+2. `res/drawable`에 우클릭을 하여 drawable을 추가해봅시다.
+3. 이름은 thumb_drawable로 하여 확인!
+
+그리고 난 뒤, 다음 코드를 복붙해봅시다.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true"
+        android:drawable="@drawable/ic_thumb_up_selected" />
+
+    <item android:drawable="@drawable/ic_thumb_up" />
+
+</selector>
+```
+
+위 코드를 설명하자면, 이 drawable은 표시되는 view라고 생각하시면 됩니다. 이 view를 누른 상태에서(state_pressed)는 ic_thumb_up_selected 를 이미지로 하고, 이외에 기본적으로는 ic_thumb_up 이미지를 사용한다는 의미입니다.
+
+그러면 이것을 한번 적용해봐야겠죠? 우리가 만든 activity_drawable의 코드를 다음과 같이 바꿔줍니다.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/thumb_drawable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+button4를 보면, background를 우리가 만든 thumb_drawable.xml로 사용하도록 설정해놨죠? 그러면, button을 눌렀을 때, thumb_drawable에서 규정한 대로 이미지를 사용하도록 됩니다. 정말 쉽죠?
 
 #### Shape drawable
+Shape drawable은 말그대로 shape를 그리는 것을 의미합니다. 결론만 말하면, 다음과 같은 그림을 그릴 수도 있습니다.
+
+![shape draw](images/1_m34HiIdSPlDPYXnq4cYJsg.png)
+
+직접 그려보고 싶으시다면, 다음 링크를 참고하세요!
+
+> [https://android.jlelse.eu/android-shape-drawables-tutorial-17fbece6fef5](https://android.jlelse.eu/android-shape-drawables-tutorial-17fbece6fef5)
+
+그런데, 왜 PNG나 JPEG등의 이미지를 사용하지 않고 drawable을 사용할까요? 그 이유도 위 링크에 있으니 참고하세요..(갑자기 귀찮아짐)
+
+## 마치며
+오늘은 안드로이드에서 여러가지 화면에 나타나는 요소들을 배워봤습니다. 크게 View, Layout, Drawable에 대해서 배웠죠? 이제 여러분은 안드로이드 frontend의 마스터입니다. 하산하셔도..는 아니고, 여러가지 더 배울 점이 남아있겠죠? 부족한건 구글링을 하며 채워나가면 됩니다.
+
+과제는 따로 나갈테니 복습하시면서 준비하세요!! 수고하셨습니다~
