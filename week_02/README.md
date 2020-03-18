@@ -366,6 +366,10 @@ public class MainActivity extends AppCompatActivity {
 
 그리고나서 실행하면 다음과 같이 button을 누를 때마다 색이 바뀌는 것을 확인할 수 있습니다. 자세한 코드는 나중에 이해하도록 하고, 이런 용도로 사용된다 정도로만 이해하도록 하죠!
 
+![빨간 화면](images/a3d9bfe5-956e-4508-ad6a-3fdb08a1d84a.png)
+
+![파란 화면](images/1e351a5f-bdce-446e-875f-9509c2fc8ede.png)
+
 ### Widget
 안드로이드는 기본적으로 여러가지 위젯을 제공해줍니다. 위젯 또한 view인데, 우리가 지금까지 자연스럽게 사용하고 있던 Button, TextView, EditText 등이 widget입니다. 여러분이 만들고싶은 대부분의 기능은 위젯만을 이용하여 구현할 수 있습니다. 자세한 스타일링이나 사용법은 역시 구글링을 하세요..
 
