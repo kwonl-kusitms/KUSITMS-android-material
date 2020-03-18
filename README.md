@@ -5,3 +5,5 @@
 [1주차 - OT 및 안드로이드 소개](week_01/README.md)
 
 [1주차 과제](week_01/Assignment.md)
+
+[2주차 - Frontend and Backend. 레이아웃 실습](week_02/README.md)
