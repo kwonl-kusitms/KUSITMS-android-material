@@ -99,6 +99,7 @@
 5. 좋아요 버튼이 눌리는 Listener는 어디서 달면 좋을까요? 아무래도 Data를 setting해줄 때 같이 해주면 좋겠죠? 즉, `Adapter` class의 `getView()`에서 해주도록 합시다! 이 때, `CheckBox.OnCheckedChangeListener`에 대한 설명은 저번 과제를 참고합시다.
 6. like는 int인데 어떻게 String으로 변환할까요? 여러가지 방법이 있습니다. String.format을 사용할 수 있고, `Integer.toString(int)`를 통해서도 변환할 수 있습니다. 무엇을 사용하든 여러분의 자유!
 7. 당연히 like에 대해서는 getter와 setter를 구현해야겠죠?
+8. TextView에서는 `setText()`를 통해 내용을 바꿔줄 수 있었습니다. 그렇다면 ImageView에서는 어떻게 이미지를 바꿔줘야 할까요? 정답은 `setImageResource()`를 이용하는 것입니다. 구글링을 하면 쉽게 찾을 수 있죠 ㅎㅎ
 
 ## 마치며
 이번 주 과제도 화이팅! Feel free to ask! 언제나 갠톡주세요! (부담스러운지 아무도 갠톡을 안함 ㅋ)
