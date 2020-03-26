@@ -9,3 +9,5 @@
 [2주차 - Frontend and Backend. 레이아웃 실습](week_02/README.md)
 
 [2주차 과제](week_02/Assignment.md)
+
+[3주차 - Android Event와 backend 기초](week_03/README.md)
