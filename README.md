@@ -13,3 +13,5 @@
 [3주차 - Android Event와 backend 기초](week_03/README.md)
 
 [3주차 과제](week_03/Assignment.md)
+
+[4주차 - intent와 화면 전환](week_04/README.md)
