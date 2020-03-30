@@ -453,3 +453,286 @@ public class SimpleSMSReceiver extends BroadcastReceiver {
 ```
 
 위와 같은 코드로 SMS 메시지를 받아 내용을 출력할 수 있습니다. 가끔 SMS인증하는 앱중에서 자동으로 인증번호를 채워주는 앱들이 있었죠? 이제 우리도 그러한 앱을 만들 수 있습니다!!!
+
+메시지를 테스트하는 방법은 다음과 같습니다. simulator에서 오른쪽 메뉴에서 더보기(점 세개)를 클릭한 뒤, Phone으로 들어가면 메시지를 보낼 수 있습니다.
+
+![메시지 보내기](images/screenshot.png)
+
+## Fragment
+이제 fragment와 tab, view pager 등의 화면 navigation에 대해서 알아봅시다! 먼저 시작하기 전에, 새로운 프로젝트를 만들도록 합시다. App의 이름은 **Screen Navigation**으로 하고, 프로젝트는 **04_screen_navigation**정도로 해줍시다.
+
+### Fragment란?
+fragment는 layout의 재사용을 위해 사용됩니다. 가벼운 activity라고 생각하시면 편한데요! 예를 들어 여러분이 어떤 레이아웃을 만들었다고 할 때, 이것을 다른 activity에서 사용하려면 어떻게 해야할까요? xml코드를 복붙하여 사용할 수도 있지만, 굉장히 비효율적일 것입니다. 이렇듯 코드의 재사용을 위해 만들어진 것이 fragment입니다. fragment는 activity와 같이 java파일과 xml파일로 이루어져 있고, 수명주기가 있습니다. activity와 다른 점은 다음과 같습니다.
+
+1. `onAttach()`, `onDetach()`가 있다. 각각 activity위에 올라갈 때, 내려갈 때 호출된다.
+2. activity가 시스템 역할을 하여 훨씬 가볍게 관리된다.
+3. activity와는 다르게 intent가 아니라 함수 호출로 activity와 소통한다. 다음 그림과 같다!
+    ![activity fragment communication](images/1-1.jpg)
+
+### Fragment를 이용한 간단한 앱 만들어보기
+Fragment를 이용하여 버튼을 누를 때마다 다른 이미지가 나오는 앱을 만들어보도록 합시다.
+
+일단 [이 파일](res.zip)을 다운받아서 drawable에 추가해줍니다.
+
+다음과 같이 `app->우클릭->New->Fragment->fragment(Blank)`를 클릭합시다.
+
+![메뉴에서 fragment](images/69b3bc5d-1286-4d5a-b8a1-07a27fe2f608.png)
+
+그리고 다음 그림과 같이 정보를 입력해줍시다. 이 때, **Include fragment factory method?**에 체크를 해제해줍시다.
+
+![fragment 만들기](images/2b4cf1ac-eeec-4143-a9e8-db8067be469e.png)
+
+이 과정을 똑같이 하여 `ButtonFragment`와 `ImageFragment`를 만들어줍시다. fragment를 만들면 다음의 코드가 기본적으로 있을 것입니다.
+
+```java
+/* ButtonFragment.java */
+
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                            Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_button, container, false);
+}
+```
+
+그렇습니다. fragment는 재사용 가능한 layout이기 때문에 inflation을 통해 activity에 올려줘야 합니다. `onCreateView()`는 activity에서 fragment를 사용할 때 호출된다고 생각하시면 됩니다. activity의 `onCreate()`와 비슷하겠죠?
+
+일단 이미지를 표시할 `ImageFragment`의 layout을 만들어줍시다.
+
+```xml
+<!-- fragment_image.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ImageFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sample1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
+```
+
+그리고 `ButtonFragment`의 layout도 만들어줍시다.
+
+```xml
+<!-- fragment_button.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ButtonFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button1" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button2" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button3" />
+    </LinearLayout>
+</FrameLayout>
+```
+
+각각의 fragment를 이용하기 위해서는 activity에서 fragment를 추가해주면 됩니다. 이 때, 각각의 fragment에 id를 부여해주도록 합시다.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fragment
+        android:id="@+id/buttonFragment"
+        android:name="com.example.screennavigation.ButtonFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3" />
+
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.example.screennavigation.ImageFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.7" />
+</LinearLayout>
+```
+
+편의성을 위해 activity_main을 linear layout으로 바꿔줬습니다.
+
+이제 각각의 button을 누를 때마다 아미지를 바꿔주도록 할 것입니다. 그런데, 문제가 생겼습니다. 우리는 `ButtonFragment`에서 `ImageFragment`의 view에 접근할 수 없습니다. 왜냐하면 fragment는 실제로는 activity에서 사용할 때 instance가 만들어지는 것이기 대문이죠. 그렇기 때문에 fragment에서 다른 fragment의 view를 건드리기 위해서는 activity를 거쳐야합니다.
+
+`MainActivity`에 `onImageChange()`라는 함수를 새로 정의해주도록 합니다.
+
+```java
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+    public void onImageChanged(int index) {
+
+    }
+}
+```
+
+우리는 button이 눌렸을 때 `onImageChanged`라는 함수를 불러서 `ImageFragment`의 view를 바꿔줄 겁니다. `ButtonFragment`를 다음과 같이 바꿔줍시다.
+
+```java
+/* ButtonFragment.java */
+
+public class ButtonFragment extends Fragment {
+    private View rootView;
+    private MainActivity activity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (MainActivity) getActivity();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_button, container, false);
+
+        Button button1 = rootView.findViewById(R.id.button1);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onImageChanged(1);
+            }
+        });
+
+        Button button2 = rootView.findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onImageChanged(2);
+            }
+        });
+
+        Button button3 = rootView.findViewById(R.id.button3);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onImageChanged(3);
+            }
+        });
+
+        return rootView;
+    }
+}
+```
+
+`onCreateView`에서 inflate를 통해 inflation을 마친 fragment를 얻을 수 있고, 이것을 rootView에 할당합니다. rootView에서는 `findViewById()`를 통해 fragment 안의 요소를 찾을 수 있습니다. 각각의 button을 눌렀을 때 본인의 index를 `MainActivity`의 `onImageChanged()`에 전달합니다. `mainActivity`는 `onAttach()`를 통해서 얻어올 수 있습니다.
+
+이제 `ImageFragment`에서 image를 setting하는 code를 짜봅시다.
+
+```java
+/* ImageFragment.java */
+
+public class ImageFragment extends Fragment {
+    private View rootView;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_image, container, false);
+        return rootView;
+    }
+
+    public void setImage(int index) {
+        ImageView imageView = rootView.findViewById(R.id.imageView);
+
+        switch (index) {
+            case 1:
+                imageView.setImageResource(R.drawable.sample1);
+                break;
+            case 2:
+                imageView.setImageResource(R.drawable.sample2);
+                break;
+            case 3:
+                imageView.setImageResource(R.drawable.sample3);
+                break;
+        }
+    }
+}
+```
+
+setImage를 통해서 imageView의 src를 바꿔줄 수 있습니다.
+
+마지막으로 MainActivity를 다음과 같이 바꿔줍니다.
+
+```java
+/* MainActivity.java */
+public class MainActivity extends AppCompatActivity {
+    FragmentManager fragmentManager;
+    ImageFragment imageFragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        fragmentManager = getSupportFragmentManager();
+    }
+
+    public void onImageChanged(int index) {
+        imageFragment = (ImageFragment) fragmentManager.findFragmentById(R.id.imageFragment);
+        if (imageFragment != null)
+            imageFragment.setImage(index);
+    }
+}
+```
+
+이 때, fragment를 받아올 때는 view와는 다르게 `FragmentManager`를 이용해야 한다는 점입니다. 이외에는 view에서와 사용법이 같죠?
+
+최종적으로 보면 flow가 다음과 같습니다.
+
+1. `ButtonFragment`에서 button을 누르면 각각의 button에 맞는 번호를 `MainActivity`의 `onImageChanged()`로 넘겨줌
+2. `onImageChanged()`에서는 `ImageFragment`의 `setImage()`를 호출함
+3. `ImageFragment`에서 `setImage()`가 image의 src를 바꾸어줌
+
+이제 앱을 실행시켜보면 버튼을 누름에 따라 이미지가 바뀌는 것을 확인할 수 있습니다!!
+
+### 왜 이런짓을 하는가?
+이쯤되면 의문이 생깁니다. 왜 이런 짓을 하는거지? 그냥 하나의 activity에 다 밀어넣으면 되는거 아닌가?
+
+해답은 간단합니다. 각각의 fragment를 재사용하기 위함입니다. 우리야 위의 예제에서 ImageFragment와 ButtonFragment를 한번만 사용했지만, 이것이 반복적으로 사용되어야 하는 경우에는 굉장히 편리하게 사용할 수 있겠죠? 그리고 fragment는 activity보다 가볍기때문에, 화면 전환에도 이용됩니다.
+
