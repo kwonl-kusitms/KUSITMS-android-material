@@ -736,3 +736,233 @@ public class MainActivity extends AppCompatActivity {
 
 해답은 간단합니다. 각각의 fragment를 재사용하기 위함입니다. 우리야 위의 예제에서 ImageFragment와 ButtonFragment를 한번만 사용했지만, 이것이 반복적으로 사용되어야 하는 경우에는 굉장히 편리하게 사용할 수 있겠죠? 그리고 fragment는 activity보다 가볍기때문에, 화면 전환에도 이용됩니다.
 
+## ActionBar 이용하기
+우리가 앱을 실행시켜보면 상단에 앱의 제목과 함께 bar가 생성이 되죠? 이것을 Actionbar라고 합니다. Actionbar는 우리가 커스터마이징할 수도 있고, 여러가지 메뉴를 제작하여 사용할 수도 있고, 없애버릴 수도 있습니다. 우리는 짧게 메뉴를 만들어보고 없애는것도 해보죠!
+
+![actionbar 보이기](images/6076deae-0fca-47fa-b9a7-d0e117164cb3.png)
+
+위에서 **Show Layout Decorations**를 체크된 상태로 두게 되면, 위에 나타나는 action bar와 아래에 나타나는 버튼들도 확인할 수 있습니다.
+
+일단 app 전체에 걸친 action bar는 `res/values/styles.xml`에서 확인할 수 있습니다. 기본적으로는 다음과 같이 되어있을 겁니다!
+
+```xml
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+</resources>
+```
+
+여기서 테마를 바꾸거나 구성을 바꿔줄 수 있습니다. actionbar를 없애고 싶으면 `Theme.AppCompat.Light.DarkActionBar` 이부분을 `Theme.AppCompat.Light.NoActionBar`이렇게 바꿔줘도 됩니다. 그러면 actionbar가 사라진 것을 확인할 수 있습니다!
+
+java에서 actionbar를 가져오는 방법은 다음과 같습니다.
+
+```java
+ActionBar abar = getActionBar();
+abar.show();
+abar.hide();
+```
+
+위와 같이 actionbar 객체를 가져와서 설정을 변경할 수 있습니다. title을 바꿀 수도 있고, 색을 변경할 수도 있죠. 별로 쓸일은 없겠죠? 요즘에는 사용하지 않는 추세입니다.
+
+### Action bar menu
+먼저 필요한 [이 파일](res-nav.zip)을 다운받읍시다. 그리고 drawable에 추가해주세요!
+
+우리는 menu라는 것을 만들어 볼 것입니다. menu도 view라고 생각하시면 되는데, res에서 새로운 폴더를 만들어서 menu를 모아둘 수 있습니다. `res`애서 우클릭 후 `New->Directory`를 클릭하여 menu라는 폴더를 만들어주고, 안에 new menu resource를 만들어줍시다.
+
+그리고는 다음과 같이 코드를 써봅시다.
+
+```xml
+<!-- menu_main.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="홈"
+        android:icon="@drawable/home_icon"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_search"
+        android:title="검색"
+        android:icon="@drawable/search_icon" />
+
+    <item
+        android:id="@+id/menu_test"
+        android:title="테스트 메뉴" />
+</menu>
+```
+
+그러면 화면이 변한 것을 확인할 수 있습니다. 이렇게 menu를 만들어줄 수 있습니다!
+
+## Bottom navigation
+어러 앱을 보면, 아래쪽에 메뉴가 배치된 것을 확인할 수 있습니다. 우리는 bottom navigation view를 이용해서 이것을 구현해봅시다.
+
+Bottom navigation view는 밑에 menu를 두며, 각 menu를 클릭할 때마다의 listener를 설정할 수 있습니다. 이 listener를 이용하여 위쪽 화면에서 나타나는 fragment를 달리하는 방식으로 bottom navigation을 구현합니다.
+
+만약에 fragment를 사용하지 않는다면 어떻게 될까요? bottom navigation view도 결국 view이므로 activity 위에 살아가야 합니다. 따라서 하나의 activity가 아니라 각 메뉴별로 activity를 만들어야 하고, 그에 따라 bottom navigation button도 똑같이 구현해줘야겠죠? fragment는 activity 위에서 살아가기 때문에 이런 걱정이 없습니다.
+
+먼저, activity_navigation.xml을 새로 만들어 다음과 같이 설정해줍니다! `MainActivity`에서 `setContentView()`도 다시 설정해줘야겠죠?
+
+```xml
+<!-- activity_navigation.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/menu_bottom_navigation" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+위와 같이 framelayout을 넣어주는 이유는, 다름이 아니라 fragment가 들어갈 자리를 확보해주기 위함입니다. 이제 코드에서 저 framelayout 대신에 fragment가 들어갈 것입니다!
+
+그런데, bottom navigation view는 menu를 사용하여 밑에 버튼을 표시합니다. 이를 위해 `res/menu`에 `menu_bottom_navigation.xml`을 새로 만들어 다음과 같이 꾸며줍시다.
+
+```xml
+<!-- menu_bottom_navigation.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeNavButton"
+        android:title="Home"
+        android:icon="@drawable/home_icon"/>
+    <item
+        android:id="@+id/searchNavButton"
+        android:title="Item"
+        android:icon="@drawable/search_icon"/>
+    <item
+        android:id="@+id/likeNavButton"
+        android:title="Item"
+        android:icon="@drawable/like_icon" />
+</menu>
+```
+
+이렇게 하면 다음과 같은 layout형태가 나오게 됩니다.
+
+![layout 형태](images/39f8a7d1-55e3-4a15-95de-778361b433b0.png)
+
+그러면 이제, 각각의 메뉴를 클릭했을 때 보여줄 fragment를 제작해야겠죠?
+
+다음과 같이 MainFragment를 만들어줍시다.
+
+```xml
+<!-- fragment_main.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SearchFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Main Fragment"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
+```
+
+마찬가지로 search fragment와 like fragment를 만들어줍시다. 이후에 MainActivity.java에서 다음과 같이 코드를 짜줍시다.
+
+```java
+public class MainActivity extends AppCompatActivity {
+    FragmentManager fragmentManager;
+    Fragment mainFragment = new MainFragment();
+    Fragment searchFragment = new SearchFragment();
+    Fragment likeFragment = new LikeFragment();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_navigation);
+
+        fragmentManager = getSupportFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, mainFragment).commit();
+
+        BottomNavigationView bottomNavView = findViewById(R.id.bottomNavView);
+        bottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Fragment selectedFragment = null;
+
+                switch (item.getItemId()) {
+                    case R.id.homeNavButton:
+                        selectedFragment = mainFragment;
+                        break;
+                    case R.id.searchNavButton:
+                        selectedFragment = searchFragment;
+                        break;
+                    case R.id.likeNavButton:
+                        selectedFragment = likeFragment;
+                        break;
+                }
+
+                if (selectedFragment != null)
+                    fragmentTransaction.replace(R.id.frameLayout, selectedFragment).commit();
+
+                return true;
+            }
+        });
+    }
+}
+```
+
+거창한건 없고, 각각의 버튼이 눌렸을 때 frame layout을 container로 하여, 그 안의 컨텐츠를 바꿔주는 형식이죠? 코드를 읽어보시면 이해가 될겁니다.
+
+한가지 특이한점은 transaction과 commit이라는 것인데, DB를 배워보신 분은 이게 뭔지 익숙하실겁니다. 아무튼..transaction은 commit 이후에는 재사용이 불가하고 저렇게 꼭 commit을 해주어야 변경사항이 반영됩니다.
+
+이로써 우리는 navigation view까지 학습을 마쳤습니다!!
+
+## 마치며
+오늘은 저번보다 더 많은 것을 배웠습니다. intent가 무엇인지, activity와 fragment의 수명주기와 사용법..그리고 화면을 오가는 여러가지 방식까지! 이 부분은 배워도 배워도 끝이 없더라고요..모르는 부분은 찾아보시면서 터득하시길 바랍니다 ㅎㅎ.
+
+다음시간에는 네트워킹을 끝으로 안드로이드 파트를 끝내고, 방학에 돌입하게 됩니다. 좀 빡센 과제를 낼 예정입니다 ㅎㅎ. 오늘도 수고하셨습니다!!
