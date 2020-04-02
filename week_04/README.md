@@ -807,6 +807,58 @@ abar.hide();
 ## Bottom navigation
 어러 앱을 보면, 아래쪽에 메뉴가 배치된 것을 확인할 수 있습니다. 우리는 bottom navigation view를 이용해서 이것을 구현해봅시다.
 
+### Dependency 추가
+Bottom navigation은 dependency를 필요로 합니다. 기본적으로 구현된 view가 아니기 때문이죠. 이를 위해서 gradle에 추가해줘야 합니다.
+
+build.gradle(Module: app) 파일을 수정해줍시다. dependency의 마지막에 다음과 같이 `implementation 'com.google.android.material:material:1.1.0'` 를 추가해줍시다.
+
+```gradle
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.example.screennavigation"
+        minSdkVersion 24
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.google.android.material:material:1.1.0'
+}
+```
+
+그리고 난 뒤, 다음 그림과 같이 코끼리 버튼을 눌러 sync해줍시다.
+
+![gradle 싱크](images/a8b0c8e0-fa25-418e-9dd2-1c96fbeed517.png)
+
+앞으로 dependency를 추가할 때는 위와 같은 과정을 거쳐야합니다!
+
+### 구현
+
 Bottom navigation view는 밑에 menu를 두며, 각 menu를 클릭할 때마다의 listener를 설정할 수 있습니다. 이 listener를 이용하여 위쪽 화면에서 나타나는 fragment를 달리하는 방식으로 bottom navigation을 구현합니다.
 
 만약에 fragment를 사용하지 않는다면 어떻게 될까요? bottom navigation view도 결국 view이므로 activity 위에 살아가야 합니다. 따라서 하나의 activity가 아니라 각 메뉴별로 activity를 만들어야 하고, 그에 따라 bottom navigation button도 똑같이 구현해줘야겠죠? fragment는 activity 위에서 살아가기 때문에 이런 걱정이 없습니다.
