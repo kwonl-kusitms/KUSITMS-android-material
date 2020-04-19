@@ -123,4 +123,15 @@ imageView.setImageBitmap(feedItem.getImage());
 
 그럼에도 불구하고 시간이 없거나 너무 어려우신 분들은, 이번 과제는 건너뛰어도 될 것 같습니다. 대신에 제가 만들어놓은 코드를 드릴테니, **반드시 읽어보시고 이해** 해보시는 것을 추천드립니다.
 
+> [https://github.com/kwonl-kusitms/KUSITMS_21th-android_study/tree/master/03_assignment](https://github.com/kwonl-kusitms/KUSITMS_21th-android_study/tree/master/03_assignment)
+
+직접 clone해서 실행해봐도 좋습니다. 다음과 같은 command를 통해서 제 프로젝트를 여러분의 local에 다운받을 수 있습니다.
+
+```bash
+cd {원하는 directory로 들어가세요!}
+git clone https://github.com/kwonl-kusitms/KUSITMS_21th-android_study
+```
+
+위와 같이 clone한 뒤, 안드로이드 프로젝트를 열 때 03_assignment를 찾아 열어주시면 됩니다. 이후에 자유롭게 둘러보며 코드를 이해해보세요!
+
 방학 끝나고 봐요 다들~
