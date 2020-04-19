@@ -19,3 +19,5 @@
 [5주차 - android에서의 네트워킹](week_05/README.md)
 
 [5 & 6주차 과제](week_05/Assignment.md)
+
+[6 & 7주차 - backend tutorial](week_07/README.md)
