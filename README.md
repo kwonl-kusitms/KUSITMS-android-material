@@ -17,3 +17,5 @@
 [4주차 - intent와 화면 전환](week_04/README.md)
 
 [5주차 - android에서의 네트워킹](week_05/README.md)
+
+[5 & 6주차 과제](week_05/Assignment.md)
