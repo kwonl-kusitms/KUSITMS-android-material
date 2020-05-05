@@ -60,9 +60,15 @@ GET https://my-api.com:8080/users
 서론이 길었죠.. 이제 본격적으로 flask를 배워보도록 합시다!
 
 ### Pycharm
-> [설치 링크](https://inpages.tistory.com/99)
+> [python 설치 가이드](https://wikidocs.net/8)
 
-python 코딩을 위한 IDE로는 pycharm을 사용하기로 했습니다. 모두 설치해오셨겠죠? (제가 잊지 않고 공지를 한다면 말이죠..) 기존에 anaconda를 사용하셔도 상관 없고, 아무것도 사용하지 않았어도 상관 없습니다! pycharm은 모두 지원해줍니다!
+> [pycharm 설치 가이드](https://inpages.tistory.com/99)
+
+python 코딩을 위한 IDE로는 pycharm을 사용하기로 했습니다. pycharm은 널리 쓰이는 python IDE이므로..배워두면 편리할 겁니다.
+
+먼저 python을 설치하시고(이 때, `Add Python 3.7 to PATH`를 꼭 체크해주세요! 설치 가이드에서 빨간색 네모를 친 부분을 잘..체크하세요) pycharm을 설치하셔야 합니다. anaconda를 설치하셨다면 python 설치는 넘어가도 될 겁니다.
+
+모두 설치해오셨겠죠? (제가 잊지 않고 공지를 한다면 말이죠..) 기존에 anaconda를 사용하셔도 상관 없고, 아무것도 사용하지 않았어도 상관 없습니다! pycharm은 모두 지원해줍니다!
 
 ### 가상환경
 python에서는 package를 설치하여 이용하게 되는데, 이러한 package는 각각 버전을 가지고 있습니다. 그리고 흔히 알려진 pip를 이용해서 설치할 수 있죠! 그런데, 프로젝트마다 사용하는 package가 다르고 버전도 다르므로 각각의 프로젝트마다 package를 분리할 수 있도록 해주는 작업이 필요합니다. 이것을 바로 virtual environment라고 합니다. 자세한건 몰라도 됩니다만, 그냥 모든 프로젝트마다 별개의 가상환경을 설정해주는 것이 좋다는 것 정도만 알아둡시다! 다음과 같은 tool로 venv를 관리할 수 있습니다.
