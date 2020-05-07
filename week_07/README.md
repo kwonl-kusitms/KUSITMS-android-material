@@ -147,6 +147,7 @@ from flask import Flask
 
 ```python
 # app.py
+
 from flask import Flask
 
 
@@ -183,3 +184,169 @@ if __name__ == "__main__":
 hooray!! 첫 사이트를 만들어봤습니다! 코드와 내용을 보면 우리가 예상할 수 있듯, 단순히 `GET /` 에 대해서 **"Hello world!"** 라는 내용을 return하는 것입니다.
 
 어찌 되었든, 우리는 첫 백엔드 서버를 만들어보였습니다!
+
+## flask로 간단한 web server 만들어보기
+다음과 같은 html코드를 프로젝트 루트(우리의 프로젝트가 위치한 곳을 root라고 부릅니다)에서, `templates/index.html`(templates 폴더에 index.html을 만들어주세요)에 복붙해줍시다. 파일을 만드는 법은 안드로이드 스튜디오에서와 같습니다. 아니면 다른 editor를 이용해도 됩니다!
+
+```html
+<!--templates/index.html-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <h1>큐밤 장기자랑 절찬리 모집중!</h1>
+    <p>그렇대요..상점도 받고 재미도 챙기고 일석이조!</p>
+</body>
+
+</html>
+```
+
+그리고는 우리의 app.py를 다음과 같이 바꿔줄까요?
+
+```python
+# app.py
+
+from flask import Flask, render_template
+
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+if __name__ == "__main__":
+    app.run()
+```
+
+이렇게 우리는 html을 넘겨주는 서버를 만들 수 있습니다! 바로 `render_template()`를 통해서 말이죠!
+
+`render_template()`는 인수로 넘겨받은 파일 이름을 기본적으로 `templates`라는 directory에서 찾아 이를 render하여 response로 return해줍니다.
+
+그런데, render라는 말이 있죠? render는 화면에 그리는 것으로 생각하면 되는데, 뭘 그린다는 걸까요?
+
+### Request argument & render
+위와 같이 정해진 콘텐츠만을 표시하는 웹사이트가 있는가 하면, 사용자의 요청이나 DB 값에 따라 내용이 변하는 웹사이트가 대부분입니다. 이렇듯 사이트틑 정적 웹사이트와 동적 웹사이트로 나뉘는데, flask는 동적 사이트를 만들기 위한 framework입니다. 당연히 그렇겠죠?
+
+#### Argument parsing
+HTTP에서 사용자가 서버에 변수를 넘겨주는 방법은 여러가지가 있습니다. 대표적인 방법으로는 POST method를 통해 요청을 하며 body에 parameter를 넣어 보내는 것이 있고, GET method에서는 다음과 같이 두 가지의 방법을 통해 변수를 넘겨줍니다.
+
+1. URL path에 argument를 포함하는 방법
+   
+   `/user/<int:id>`와 같이, URL path에 변수를 포함하는 방법입니다. `<int:id>`이 부분에 `/user/3`과 같이 전달하게 되면, 서버에서 이를 변수로 받아 처리하도록 되어 있습니다.
+
+   flask에서는 다음과 같이 변수를 받아 처리합니다.
+
+   ```python
+   @app.route("/user/<int:id>")
+   def user_detail(id):
+      return "Your id is: {}".format(id)
+   ```
+
+2. Query parameter를 이용하는 방법
+
+   HTTP에는 query parameter라는 것이 있습니다. 변수를 전달하기 위한 방식으로, URL의 끝에 `?변수1=값1&변수2=값2`와 같이 표기하도록 정한 것입니다. 
+
+   ex) `/user?id=3` 이렇게 전달하면, 서버에서 id라는 변수에 대한 값을 3으로 하여 parsing하게 됩니다.
+
+   flask에서는 다음과 같이 변수를 받아 처리합니다.
+
+   ```python
+   from flask import request
+
+
+   @app.route("/user")
+   def user_detail():
+      id = request.args.get("id")
+      return "Your id is: {}".format(id)
+   ```
+
+   request에서 args라는 변수는 dict 형식으로 되어있으며, query string에서 변수 이름:값 쌍으로 되어 있습니다.
+
+위와 같이, 사용자로부터 입력 값을 받았으면 이를 활용해야겠죠? 아까 봤던 index.html을 다음과 같이 고쳐줍시다.
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <h1>큐밤 장기자랑 절찬리 모집중!</h1>
+    <p>그렇대요..상점도 받고 재미도 챙기고 일석이조!</p>
+
+    <!--동적으로 내용을 렌더링 하기 위함-->
+    {% if username %}
+    <p>{{ username }} 님도 꼭 오실거죠?</p>
+    {% endif %}
+</body>
+
+</html>
+```
+
+body의 마지막에 이상한 부분이 추가되었죠? 해당 코드는 python에서 주로 사용되는 jinja2 template engine이라는 부분입니다. jinja2의 사용법은 간단히 말하면 다음과 같습니다.
+
+- {{ ... }} : 변수나 표현식
+- {% ... %} : if나 for같은 제어문
+- {# ... #} : 주석
+
+저 ... 안에 들어가는 내용은 python에서와 같습니다. 대신에, html에는 indentation이 없기 때문에 `endif`, `endfor`와 같은 구문이 들어가야 하죠!
+
+```html
+<!--동적으로 내용을 렌더링 하기 위함-->
+{% if username %}
+<p>{{ username }} 님도 꼭 오실거죠?</p>
+{% endif %}
+```
+
+따라서 위의 부분을 간단히 해석하자면 다음과 같습니다. username이라는 변수가 존재하면(빈 스트링이거나 None이 아니면), if block 안의 html 코드를 표시하라는 것이죠! 정말 쉽죠?
+
+그러면 html에서 저렇게 코딩을 해줬으니, flask에서 username이라는 놈을 전달 해줘야겠죠? 다음과 같이 app.py를 바꿔줍시다.
+
+```python
+# app.py
+
+from flask import Flask, render_template, request
+
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def index():
+    username = request.args.get("username")
+    return render_template("index.html", username=username)
+
+
+@app.route("/<username>")
+def index_by_username(username):
+    return render_template("index.html", username=username)
+
+
+if __name__ == "__main__":
+    app.run()
+```
+
+우리가 방금 배웠던 두 가지 방법을 통해서 username이라는 변수를 받아 render하는데 성공했습니다! 이것만으로도 여러분은 간단한 웹사이트를 만들 수 있게 되었습니다 ㅎㅎ.. 나머지는 사실 노가다가 크죠.. 스포를 하자면 REST API도 별 차이가 없습니다.
+
+이제 각각 다음의 URL을 통해 우리의 사이트를 실험해보도록 합시다.
+
+[http://127.0.0.1:5000/내이름](http://127.0.0.1:5000/내이름)
+
+[http://127.0.0.1:5000/?username=내이름](http://127.0.0.1:5000/?username=내이름)
+
+## 마치며
+오늘은 간단하게 backend의 tutorial과..flask 입문을 진행 해봤습니다.
+
+HTTP가 무엇인지, python 환경은 어떻게 셋팅하는지, flask는 어떻게 동적인 페이지를 만드는지 간단히 배워봤으니, 복습 열심히 해오세요!!
+
+앞으로 몇 번 안남았는데..끝까지 화이팅해서 달릴 수 있도록 해봅시다!!ㅎㅎㅎ
