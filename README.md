@@ -21,3 +21,5 @@
 [5 & 6주차 과제](week_05/Assignment.md)
 
 [6 & 7주차 - backend tutorial](week_07/README.md)
+
+[8주차 - DB basic](week_08/README.md)
